@@ -19,3 +19,5 @@ if __name__ == '__main__':
     assert parse('https://youtube.com') == {}
     assert parse('https://youtube.com/?') == {}
     assert parse('https://youtube.com/?ivanguy=gorn') == {'ivanguy': 'gorn'}
+    assert parse('https://youtube.com/?vlad=kost') == {'vlad': 'kost'}
+    assert parse('https://youtube.com/?vlad=kost&age=20') == {'vlad': 'kost', 'age': '20'}
