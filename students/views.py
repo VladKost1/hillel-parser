@@ -1,35 +1,58 @@
-from random import randint
+import random
 
-from django.http import HttpResponse, JsonResponse
-from django.core import serializers
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.forms.models import model_to_dict
+from django.shortcuts import render
+from django.urls import reverse
+from django.views.decorators.http import require_http_methods
 from faker import Faker
 
-from students.models import Student
+from students.forms import TeachersForm, GroupsForm
+from students.models import Student, Group
 
-
-def index(request):
-    return HttpResponse('<h1>Hello django!!!</h1>')
 
 
 def student(request):
-    a = Faker()
-    student = Student.objects.create(first_name=a.first_name(), last_name=a.last_name(), age=randint(0, 50))
-    data = serializers.serialize('json', [student], fields=('id', 'first_name', 'last_name', 'age'))
-    return HttpResponse(data)
+    teachers = Student.objects.all()
+    groups = Group.objects.all()
+    return render(request, 'students.html', context={'students': teachers, 'groups': groups})
 
 
-def students(request):
-    a = Faker()
-    students = []
-    res = request.GET.get('count')
-    if res:
-        for i in range(int(res)):
-            student = Student.objects.create(first_name=a.first_name(), last_name=a.last_name(), age=randint(0, 50))
-            students.append(student)
-        data = serializers.serialize('json', students, fields=('id', 'first_name', 'last_name', 'age'))
-        return HttpResponse(data)
-    return HttpResponse('Error')
+@require_http_methods(['GET', 'POST'])
+def create_teachers(request):
+    if request.method == 'GET':
+        fake = Faker()
 
-# student = Student.objects.create(first_name=a.first_name(), last_name=a.last_name(), age=randint(0, 20))
-# result = serializers.serialize('json', [student, ], fields=('id', 'first_name', 'last_name', 'age'))
-# return HttpResponse(result)
+        data = {
+            "first_name": fake.first_name(),
+            "last_name": fake.last_name(),
+            "age": random.randint(17, 60),
+        }
+
+        form = TeachersForm(initial=data)
+
+        return render(request, 'create-teachers.html', context={'form': form})
+
+    form = TeachersForm(request.POST)
+
+    if form.is_valid():
+        form.save()
+
+        return HttpResponseRedirect(reverse('students-list'))
+
+    return HttpResponse(str(form.errors), status=400)
+
+
+def create_groups(request):
+    fake = Faker()
+    data = {
+        "name": fake.first_name(),
+        "number": random.randint(1, 20),
+    }
+    form = GroupsForm(initial=data)
+    if request.method == 'GET':
+        return render(request, 'create-groups.html', context={'form': form})
+
+    form = GroupsForm(request.POST)
+    form.save()
+    return HttpResponseRedirect(reverse('students-list'))
