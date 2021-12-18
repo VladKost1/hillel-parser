@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+</head>
+<body>
+<h1>Hello!!!!</h1>
+<h3><a href="{% url 'create-teachers' %}">Create Teachers</a></h3>
+<h3><a href="{% url 'create-groups' %}">Create Groups</a></h3>
+<h2>Teachers list</h2>
+<ul>
+
+    {% for student in students %}
+
+        <li>
+            {{ student.full_name }}
+        </li>
+
+
+    {% endfor %}
+</ul>
+<h2>Groups list</h2>
+<ul>
+    {% for group in groups %}
+
+        <li>
+            {{ group.full_group }}
+        </li>
+
+
+    {% endfor %}
+</ul>
+</body>
+</html>
