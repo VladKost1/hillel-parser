@@ -1,58 +1,68 @@
-import random
-
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
-from django.forms.models import model_to_dict
-from django.shortcuts import render
+from django.http import HttpResponseRedirect, HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
-from django.views.decorators.http import require_http_methods
-from faker import Faker
-
-from students.forms import TeachersForm, GroupsForm
-from students.models import Student, Group
+from students.forms import TeacherForm, StudentForm
+from students.models import Teacher, Student
 
 
-
-def student(request):
-    teachers = Student.objects.all()
-    groups = Group.objects.all()
-    return render(request, 'students.html', context={'students': teachers, 'groups': groups})
+def students_list(request):
+    students = Student.objects.all()
+    return render(request, 'students_list.html', context={'students': students})
 
 
-@require_http_methods(['GET', 'POST'])
+def create_student(request):
+    if request.method == 'GET':
+        return render(request, 'create_student.html', context={'form': StudentForm()})
+    form = StudentForm(request.POST)
+    form.save()
+    return redirect(reverse('students_list'))
+
+
+def edit_student(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    if request.method == 'GET':
+        form = StudentForm(instance=student)
+        return render(request, 'edit_student.html', context={'form': form, 'student': student})
+    form = StudentForm(request.POST, instance=student)
+    form.save()
+    return redirect(reverse('students_list'))
+
+
+def delete_student(request, student_id):
+    student = get_object_or_404(Student, pk=student_id)
+    if request.method == 'POST':
+        student.delete()
+        return redirect(reverse('students_list'))
+
+
+def teachers_list(request):
+    teachers = Teacher.objects.all()
+    return render(request, 'teachers_list.html', context={'teachers': teachers})
+
+
 def create_teachers(request):
     if request.method == 'GET':
-        fake = Faker()
-
-        data = {
-            "first_name": fake.first_name(),
-            "last_name": fake.last_name(),
-            "age": random.randint(17, 60),
-        }
-
-        form = TeachersForm(initial=data)
-
-        return render(request, 'create-teachers.html', context={'form': form})
-
-    form = TeachersForm(request.POST)
-
+        return render(request, 'create_teacher.html', context={'form': TeacherForm()})
+    form = TeacherForm(request.POST)
     if form.is_valid():
         form.save()
-
-        return HttpResponseRedirect(reverse('students-list'))
-
+        return HttpResponseRedirect(reverse('teachers_list'))
     return HttpResponse(str(form.errors), status=400)
 
 
-def create_groups(request):
-    fake = Faker()
-    data = {
-        "name": fake.first_name(),
-        "number": random.randint(1, 20),
-    }
-    form = GroupsForm(initial=data)
-    if request.method == 'GET':
-        return render(request, 'create-groups.html', context={'form': form})
+def edit_teacher(request, teacher_id):
+    teacher = get_object_or_404(Teacher, pk=teacher_id)
+    if request.method == "GET":
+        form = TeacherForm(instance=teacher)
+        return render(request, 'edit_teacher.html', context={'form': form, 'teacher': teacher})
+    form = TeacherForm(request.POST, instance=teacher)
+    if form.is_valid():
+        form.save()
+    return redirect(reverse('teachers_list'))
 
-    form = GroupsForm(request.POST)
-    form.save()
-    return HttpResponseRedirect(reverse('students-list'))
+
+def delete_teacher(request, teacher_id):
+    teacher = get_object_or_404(Teacher, pk=teacher_id)
+    if request.method == 'POST':
+        teacher.delete()
+        return redirect(reverse('teachers_list'))

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="{% url 'edit_student' student.pk %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Edit</button>
+</form>
+<br>
+<form action="{% url 'delete_student' student.pk %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+</form>
+</body>
+</html>

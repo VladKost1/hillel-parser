@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Students</title>
+</head>
+<body>
+<h1>Hello!!!!</h1>
+<h3><a href="{% url 'create_teacher' %}">Create Teachers</a></h3>
+<h2>Teachers list</h2>
+<ul>
+    {% for teacher in teachers %}
+        <li>
+            <a href="{% url 'edit_teacher' teacher_id=teacher.pk %}"> {{ teacher.full_name }}</a>
+        </li>
+    {% endfor %}
+</ul>
+</body>
+</html>

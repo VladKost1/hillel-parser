@@ -2,16 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Create Teachers</title>
+    <title>Create Groups</title>
 </head>
 <body>
-
-<form action="{% url 'create-teachers' %}" method="POST">
+<form action="{% url 'create_group' %}" method="POST">
     {{ form.as_p }}
     {% csrf_token %}
     <input type="submit">
-
-
 </form>
 </body>
 </html>

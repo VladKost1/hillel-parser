@@ -1,10 +1,21 @@
 from django.db import models
 
 
-class Student(models.Model):
-    first_name = models.CharField(max_length=64)
-    last_name = models.CharField(max_length=64)
-    age = models.PositiveIntegerField()
+class Person(models.Model):
+    class Meta:
+        abstract = True
+
+    first_name = models.CharField(
+        verbose_name='first name',
+        max_length=64
+    )
+    last_name = models.CharField(
+        verbose_name='last name',
+        max_length=64
+    )
+    age = models.PositiveIntegerField(
+        verbose_name='age'
+    )
 
     @property
     def full_name(self):
@@ -17,13 +28,36 @@ class Student(models.Model):
         return self.get_full_info()
 
 
-class Group(models.Model):
-    name = models.CharField(max_length=30)
-    number = models.PositiveIntegerField()
+class Teacher(Person):
+    first_name = models.CharField(
+        verbose_name='first name',
+        max_length=64
+    )
+    last_name = models.CharField(
+        verbose_name='last name',
+        max_length=64
+    )
+    age = models.PositiveIntegerField(
+        verbose_name='age'
+    )
+    subject = models.CharField(
+        verbose_name='subject',
+        max_length=64
+    )
 
-    @property
-    def full_group(self):
-        return f'{self.name}, {self.number}'
+    salary = models.CharField(
+        verbose_name='salary',
+        max_length=64
+    )
 
-    def __str__(self):
-        return f'{self.name}, {self.number}'
+    def get_job_info(self):
+        return f'Subject: {self.subject}, salary: {self.salary}'
+
+
+class Student(Person):
+    average_rating = models.FloatField(
+        verbose_name='average rating'
+    )
+
+    def get_student_info(self):
+        return f'{self.first_name} {self.last_name} has {self.average_rating} rating'
