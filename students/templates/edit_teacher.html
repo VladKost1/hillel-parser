@@ -20,6 +20,7 @@
 <form action="{% url 'delete_teacher' teacher_id=teacher.pk %}" method="POST">
     {% csrf_token %}
     <button type="submit">Delete</button>
+
 </form>
 </body>
 </html>

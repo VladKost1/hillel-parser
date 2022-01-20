@@ -25,5 +25,6 @@ def contact(request):
         form = ContactForm(request.POST)
         if form.is_valid():
             send_email_task.delay(form.cleaned_data['title'], form.cleaned_data['message'], EMAIL_HOST_USER,
-                                  ['gorn228322@gmail.com'])
+                                  ['vladkostiuk2@gmail.com'])
     return render(request, 'test_contact.html', context={'form': ContactForm()})
+

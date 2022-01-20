@@ -35,6 +35,12 @@ def delete_student(request, student_id):
         return redirect(reverse('students_list'))
 
 
+# def add_group(request, student_id):
+#     student = get_object_or_404(Student, pk=student_id)
+#     if request.method == 'GET':
+
+
+
 def teachers_list(request):
     teachers = Teacher.objects.all()
     return render(request, 'teachers_list.html', context={'teachers': teachers})
