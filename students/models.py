@@ -58,6 +58,11 @@ class Student(Person):
     average_rating = models.FloatField(
         verbose_name='average rating'
     )
+    teacher = models.ForeignKey(
+        Teacher,
+        on_delete=models.CASCADE,
+        null=True
+    )
 
     def get_student_info(self):
         return f'{self.first_name} {self.last_name} has {self.average_rating} rating'
