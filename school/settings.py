@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'students',
     'groups',
     'middleware',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [

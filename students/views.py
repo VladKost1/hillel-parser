@@ -3,6 +3,35 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from students.forms import TeacherForm, StudentForm
 from students.models import Teacher, Student
+from groups.models import Group
+from rest_framework import generics
+
+from students.serializers import StudentsListSerializer, StudentDetailSerializer, GroupsListSerializer, \
+    GroupDetailSerializer
+
+
+class StudentsList(generics.ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentsListSerializer
+
+
+class StudentDetails(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = StudentDetailSerializer
+
+    def get_object(self):
+        return get_object_or_404(Student, pk=self.kwargs.get('student_id'))
+
+
+class GroupsList(generics.ListCreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupsListSerializer
+
+
+class GroupDetails(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = GroupDetailSerializer
+
+    def get_object(self):
+        return get_object_or_404(Group, pk=self.kwargs.get('group_id'))
 
 
 def students_list(request):
@@ -33,12 +62,6 @@ def delete_student(request, student_id):
     if request.method == 'POST':
         student.delete()
         return redirect(reverse('students_list'))
-
-
-# def add_group(request, student_id):
-#     student = get_object_or_404(Student, pk=student_id)
-#     if request.method == 'GET':
-
 
 
 def teachers_list(request):
