@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport">
+    <title>Edit teachers</title>
+</head>
+<body>
+
+{% for error in form.non_field_errors %}
+    {{ error }}
+{% endfor %}
+
+<form action="{% url 'edit_teacher' teacher_id=teacher.pk %}" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Edit</button>
+</form>
+<br>
+<form action="{% url 'delete_teacher' teacher_id=teacher.pk %}" method="POST">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+
+</form>
+</body>
+</html>
